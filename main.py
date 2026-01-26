@@ -4,7 +4,7 @@ import streamlit as st
 
 df = pd.read_csv('despesaOrcamentaria 2022x2023x2024 - Possibilidades de Gráficos.csv')
 
-col1, col2 = st.colunns(2)
+col1, col2 = st.columns(2)
 
 with col1: 
     # Seleciona as três primeiras colunas (índices 0, 1 e 2)
