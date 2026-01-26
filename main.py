@@ -2,6 +2,12 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+st.set_page_config(
+    page_title="DashUF",
+    layout="wide")
+
+st.title("DASHUF: Um Dashboard sobre os Dados de Despesa da UFERSA - Anos 2022, 2023 e 2024")
+
 df = pd.read_csv('despesaOrcamentaria 2022x2023x2024 - Possibilidades de Gráficos.csv')
 
 col1, col2 = st.columns(2)
