@@ -217,6 +217,31 @@ with row3_col2:
     
     st.plotly_chart(fig6, use_container_width=True)
 
+st.divider()
 
+row4_col1, row4_col2 = st.columns(2)
 
-
+with row4_col1:
+    
+    df_filtered = df.copy()
+    
+    df_filtered.columns = ['Ação', 'SUM de Orçamento Atualizado', 'SUM de Orçamento Realizado']
+    
+    def clean_currency(column):
+        return (column.astype(str)
+                .str.replace('R$', '', regex=False)
+                .str.replace('.', '', regex=False)
+                .str.replace(',', '.', regex=False)
+                .str.strip()
+                .astype(float))
+    
+    df_filtered['SUM de Orçamento Atualizado'] = clean_currency(df_filtered['SUM de Orçamento Atualizado'])
+    df_filtered['SUM de Orçamento Realizado'] = clean_currency(df_filtered['SUM de Orçamento Realizado'])
+    
+    fig7 = px.histogram(df_filtered, x='Ação', y=['SUM de Orçamento Atualizado', 'SUM de Orçamento Realizado'],
+    title='Comparativo de Despesa Corrente',
+    barmode = 'group', text_auto=True,
+    color_discrete_map={'SUM de Orçamento Atualizado': 'blue', 'SUM de Orçamento Realizado': 'red'})
+    fig7.update_layout(yaxis_title = 'Valor em R$')
+    
+    st.plotly_chart(fig7, use_container_width=True)
