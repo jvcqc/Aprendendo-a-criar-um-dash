@@ -222,10 +222,8 @@ st.divider()
 row4_col1, row4_col2 = st.columns(2)
 
 with row4_col1:
-    
-    df_filtered = df.groupby('Ação').sum().reset_index() # Agora 'Ação' volta a ser coluna (Total 3)
-    df_filtered.columns = ['Ação', 'Valor1', 'Valor2'] # SUCESSO
-    
+       
+    # 2. Função de limpeza (a mesma que já usamos)
     def clean_currency(column):
         return (column.astype(str)
                 .str.replace('R$', '', regex=False)
@@ -234,13 +232,42 @@ with row4_col1:
                 .str.strip()
                 .astype(float))
     
-    df_filtered['SUM de Orçamento Atualizado'] = clean_currency(df_filtered['SUM de Orçamento Atualizado'])
-    df_filtered['SUM de Orçamento Realizado'] = clean_currency(df_filtered['SUM de Orçamento Realizado'])
+    # 3. Preparação dos dados
+    # Vamos pegar as colunas relevantes. Supondo que 'Ação' seja a coluna 0 ou similar.
+    # Ajuste o iloc abaixo para pegar: [Coluna Ação, Coluna Orc. Atualizado, Coluna Orc. Realizado]
+    # Exemplo hipotético: df.iloc[:, [3, 7, 8]] -> Verifique no seu CSV qual o índice da coluna "Ação"
+    # Vou assumir que você já sabe quais são e chamaremos de 'df_acao'
+    # Para este exemplo, vou assumir que a coluna 'Ação' existe no seu df original.
     
-    fig7 = px.histogram(df_filtered, x='Ação', y=['SUM de Orçamento Atualizado', 'SUM de Orçamento Realizado'],
-    title='Comparativo de Despesa Corrente',
-    barmode = 'group', text_auto=True,
-    color_discrete_map={'SUM de Orçamento Atualizado': 'blue', 'SUM de Orçamento Realizado': 'red'})
-    fig7.update_layout(yaxis_title = 'Valor em R$')
+    # Limpamos os valores monetários ANTES de agrupar
+    col_orc_atualizado = df.columns[1] # Ajuste o índice conforme seu CSV
+    col_orc_realizado = df.columns[2]  # Ajuste o índice conforme seu CSV
+    
+    df[col_orc_atualizado] = clean_currency(df[col_orc_atualizado])
+    df[col_orc_realizado] = clean_currency(df[col_orc_realizado])
+    
+    # --- O PULO DO GATO (CORREÇÃO DO ERRO) ---
+    
+    # Agrupamos por Ação e Somamos
+    # Substitua 'Ação' pelo nome exato da coluna no seu CSV se for diferente
+    df_grouped = df.groupby('Ação')[[col_orc_atualizado, col_orc_realizado]].sum()
+    
+    # AQUI ESTÁ A CORREÇÃO: reset_index() traz a 'Ação' de volta como coluna
+    df_grouped = df_grouped.reset_index()
+    
+    # Agora temos 3 colunas, então podemos dar 3 nomes
+    df_grouped.columns = ['Ação', 'SUM de Orçamento Atualizado', 'SUM de Orçamento Realizado']
+    
+    # 4. Criando o Gráfico (Barras Horizontais conforme sua imagem)
+    fig = px.bar(df_grouped, 
+                 y='Ação', # No eixo Y para ficar horizontal
+                 x=['SUM de Orçamento Atualizado', 'SUM de Orçamento Realizado'],
+                 title='Grupo de Despesas Correntes',
+                 barmode='group',
+                 orientation='h', # Define que é horizontal
+                 text_auto=True) # Mostra os valores nas barras
+    
+    # Ajusta a altura para caber todos os nomes
+    fig.update_layout(height=800, yaxis={'categoryorder':'total ascending'})
     
     st.plotly_chart(fig7, use_container_width=True)
