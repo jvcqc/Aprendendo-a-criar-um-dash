@@ -154,3 +154,33 @@ with row2_col2:
     fig4.update_layout(yaxis_title = 'Valor em R$')
 
     st.plotly_chart(fig4, use_container_width=True)
+
+st.divider()
+
+row3_col1, row3_col2 = st.columns(2)
+
+with row3_col1:
+    
+    # Seleciona as colunas E, F e G (índices 4, 5 e 6) e as linhas 57 a 63
+    df_filtered = df.iloc[57:63, 4:7]
+    
+    # Renomeia as colunas para facilitar o uso
+    df_filtered.columns = ['AÇÃO', 'Orcamento_Inicial', 'Orcamento_Atualizado']
+    
+    # Função para limpar e converter colunas de moeda
+    def clean_currency(column):
+        return (column.astype(str)
+                .str.replace('R$', '', regex=False)
+                .str.replace('.', '', regex=False)
+                .str.replace(',', '.', regex=False)
+                .str.strip()
+                .astype(float))
+    
+    # Aplica a limpeza às colunas de orçamento
+    df_filtered['Orcamento_Atualizado'] = clean_currency(df_filtered['Orcamento_Atualizado'])
+    df_filtered['Orcamento_Inicial'] = clean_currency(df_filtered['Orcamento_Inicial'])
+    
+    st.plotly_chart(fig4, use_container_width=True)
+
+
+
