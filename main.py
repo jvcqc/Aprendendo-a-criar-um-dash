@@ -223,9 +223,8 @@ row4_col1, row4_col2 = st.columns(2)
 
 with row4_col1:
     
-    df_filtered = df.iloc[1:9, 0:3]
-    
-    df_filtered.columns = ['Ação', 'SUM de Orçamento Atualizado', 'SUM de Orçamento Realizado']
+    df_filtered = df.groupby('Ação').sum().reset_index() # Agora 'Ação' volta a ser coluna (Total 3)
+    df_filtered.columns = ['Ação', 'Valor1', 'Valor2'] # SUCESSO
     
     def clean_currency(column):
         return (column.astype(str)
