@@ -180,6 +180,12 @@ with row3_col1:
     df_filtered['Orcamento_Atualizado'] = clean_currency(df_filtered['Orcamento_Atualizado'])
     df_filtered['Orcamento_Inicial'] = clean_currency(df_filtered['Orcamento_Inicial'])
     
+    fig5 = px.histogram(df_filtered, x='AÇÃO', y=['Orcamento_Inicial', 'Orcamento_Atualizado'],
+    title='Comparativo da Despesa de Pessoal e Encargos Sociais - 2023',
+    barmode = 'group', text_auto=True,
+    color_discrete_map={'Orcamento_Inicial': 'blue', 'Orcamento_Atualizado': 'red'})
+    fig5.update_layout(yaxis_title = 'Valor em R$')
+    
     st.plotly_chart(fig4, use_container_width=True)
 
 
