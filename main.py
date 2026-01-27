@@ -127,7 +127,7 @@ with row2_col1:
     
     st.plotly_chart(fig3, use_container_width=True)
 
-with row2_col1:
+with row2_col2:
     # Seleciona as colunas E, F e G (índices 4, 5 e 6) e as linhas 31 a 37
     df_filtered = df.iloc[30:37, 4:7]
     
