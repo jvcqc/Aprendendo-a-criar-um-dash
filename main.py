@@ -84,7 +84,8 @@ with col2:
     
     st.plotly_chart(fig2, use_container_width=True)
 
-with col3:
+row2_col1, row2_col2 = st.columns(2)
+with row2_col1:
     # Seleciona as colunas L, M e N (índices 11, 12 e 13)
     df_filtered = df.iloc[:, 11:14]
     
