@@ -186,7 +186,7 @@ with row3_col1:
     color_discrete_map={'Orcamento_Inicial': 'blue', 'Orcamento_Atualizado': 'red'})
     fig5.update_layout(yaxis_title = 'Valor em R$')
     
-    st.plotly_chart(fig4, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 
