@@ -213,8 +213,9 @@ with row3_col2:
     title='Comparativo da Despesa de Pessoal e Encargos Sociais - 2024',
     barmode = 'group', text_auto=True,
     color_discrete_map={'Orcamento_Inicial': 'blue', 'Orcamento_Atualizado': 'red'})
-    
     fig6.update_layout(yaxis_title = 'Valor em R$')
+    
+    st.plotly_chart(fig6, use_container_width=True)
 
 
 
