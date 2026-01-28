@@ -302,4 +302,4 @@ with row4_col2:
     color_discrete_map={'Orçamento Atualizado': 'blue', 'Orçamento Realizado': 'red'})
     fig8.update_layout(yaxis_title = 'Valor em R$')
 
-    st.plotly_chart(fig7, use_container_width=True)
+    st.plotly_chart(fig8, use_container_width=True)
