@@ -303,3 +303,56 @@ with row4_col2:
     fig8.update_layout(yaxis_title = 'Valor em R$')
 
     st.plotly_chart(fig8, use_container_width=True)
+
+row5_col1, row5_col2 = st.columns(2)
+
+with row5_col1:
+
+    df = pd.read_csv('despesaOrcamentaria 2022x2023x2024 - Tabela dinâmica 2.csv')
+    
+    # Create a copy to work with, avoiding modifying the original df
+    df_temp = df.copy()
+    
+    # Filter for rows where Unnamed: 0 is a year (2022, 2023, 2024)
+    # And Unnamed: 1 and Unnamed: 2 (budget data) are not NaN
+    # Assuming these budget columns are always together with the year
+    df_filtered_raw = df_temp[
+        (pd.to_numeric(df_temp['Unnamed: 0'], errors='coerce').isin([2022, 2023, 2024])) &
+        (df_temp['Unnamed: 1'].notna()) &
+        (df_temp['Unnamed: 2'].notna())
+    ].copy()
+    
+    # Select only the relevant columns
+    df_filtered = df_filtered_raw[['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2']].copy()
+    
+    # Explicitly assign the correct column names
+    df_filtered.columns = ['ANO', 'DESPESA CORRENTE (R$)', 'DESPESA DE CAPITAL (R$)']
+    
+    # Convert 'ANO' to numeric, coercing errors to NaN
+    df_filtered['ANO'] = pd.to_numeric(df_filtered['ANO'], errors='coerce')
+    # At this point, all ANO should be valid years, but keep dropna as a safeguard if other data sneaks in
+    df_filtered = df_filtered.dropna(subset=['ANO'])
+    
+    def clean_currency(column):
+        return (column.astype(str)
+                .str.replace('R$', '', regex=False)
+                .str.replace('.', '', regex=False)
+                .str.replace(',', '.', regex=False)
+                .str.strip()
+                .astype(float))
+    
+    # Apply cleaning to relevant columns
+    df_filtered['DESPESA CORRENTE (R$)'] = clean_currency(df_filtered['DESPESA CORRENTE (R$)'])
+    df_filtered['DESPESA DE CAPITAL (R$)'] = clean_currency(df_filtered['DESPESA DE CAPITAL (R$)'])
+    
+    # Convert 'ANO' to integer after cleaning
+    df_filtered['ANO'] = df_filtered['ANO'].astype(int)
+    
+    fig9 = px.histogram(df_filtered, x='ANO', y=['DESPESA CORRENTE (R$)', 'DESPESA DE CAPITAL (R$)'],
+    title='Distribuição do Orçamento Realizado por Categoria Econômica (2022-2024)',
+    barmode = 'group', text_auto=True,
+    color_discrete_map={'DESPESA CORRENTE (R$)': 'blue', 'DESPESA DE CAPITAL (R$)': 'red'})
+    fig9.update_layout(yaxis_title = 'Valor em R$')
+
+st.plotly_chart(fig9, use_container_width=True)
+    
