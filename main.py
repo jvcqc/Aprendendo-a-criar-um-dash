@@ -402,4 +402,47 @@ with row5_col2:
     )
     fig10.show()
     st.plotly_chart(fig10, use_container_width=True)
+
+row6_col1, row6_col2 = st.columns(2)
+
+with row6_col1:
+
+    # Seleciona as linhas 55 a 57 (índices 54 a 56) e as colunas 1, 2 e 3 (B, C, D)
+    df_filtered = df.iloc[54:57, [1, 2, 3]].copy()
     
+    # Renomeia as colunas para facilitar o uso
+    df_filtered.columns = ['ANO', 'Orçamento Atualizado', 'Orçamento Realizado']
+    
+    def clean_currency(column):
+        return (column.astype(str)
+                .str.replace('R$', '', regex=False)
+                .str.replace('.', '', regex=False)
+                .str.replace(',', '.', regex=False)
+                .str.strip()
+                .replace('nan', '0') # Se a célula estiver vazia, vira zero
+                .astype(float))
+    
+    # Aplica a limpeza às colunas de orçamento
+    df_filtered['Orçamento Atualizado'] = clean_currency(df_filtered['Orçamento Atualizado'])
+    df_filtered['Orçamento Realizado'] = clean_currency(df_filtered['Orçamento Realizado'])
+    
+    # Converte a coluna 'ANO' para inteiro
+    df_filtered['ANO'] = df_filtered['ANO'].astype(int)
+    
+    fig11 = px.bar(
+        df_filtered,
+        x='ANO',
+        y=['Orçamento Atualizado', 'Orçamento Realizado'],
+        title='Comparativo de Despesa com Educação por Ano', # Updated title to reflect correct rows
+        barmode = 'group',
+        text_auto=False, # Removed automatic text formatting/rounding
+        color_discrete_map={'Orçamento Atualizado': 'blue', 'Orçamento Realizado': 'red'}
+    )
+    fig11.update_layout(
+        xaxis_title = 'Ano',
+        yaxis_title = 'Valor em R$',
+        xaxis={'type': 'category'}
+    )
+    fig11.update_traces(texttemplate='%{y}', textposition='outside') # Reverted to display full y-value
+    fig11.show()
+    st.plotly_chart(fig11, use_container_width=True)
