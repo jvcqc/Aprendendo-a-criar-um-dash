@@ -363,4 +363,41 @@ fig9 = px.histogram(
 fig9.update_layout(yaxis_title='Valor em R$ (Escala Log)')
 fig9.show()
 st.plotly_chart(fig9, use_container_width=True)
+
+with row5_col2:
     
+# Seleciona as linhas 39, 42 e 45 e as colunas 0 e 2 (correspondentes a A e C)
+df_filtered = df.iloc[[39, 42, 45], [0, 2]].copy()
+
+# Renomeia as colunas para facilitar o uso
+df_filtered.columns = ['Elemento de Despesa', 'TOTAL']
+
+# Preenche valores NaN na coluna 'Elemento de Despesa' com o último valor válido
+df_filtered['Elemento de Despesa'] = df_filtered['Elemento de Despesa'].ffill().infer_objects(copy=False)
+
+def clean_currency(column):
+    return (column.astype(str)
+            .str.replace('R$', '', regex=False)
+            .str.replace('.', '', regex=False)
+            .str.replace(',', '.', regex=False)
+            .str.strip()
+            .replace('nan', '0') # Se a célula estiver vazia, vira zero
+            .astype(float))
+
+# Aplica a limpeza às colunas de orçamento
+df_filtered['TOTAL'] = clean_currency(df_filtered['TOTAL'])
+
+fig10 = px.bar(
+    df_filtered,
+    x='Elemento de Despesa',
+    y='TOTAL',
+    title='Top 3 Elementos de Despesa por Orçamento Realizado (2022 - 2024)',
+    text_auto='.2s',
+    color_discrete_sequence=['red']
+)
+fig10.update_layout(
+xaxis_title = 'Elemento de Despesa',
+yaxis_title = 'Valor Total (R$)',
+xaxis={'type': 'category'} # Força o eixo X a tratar os nomes como categorias, não números
+)
+fig10.show()
