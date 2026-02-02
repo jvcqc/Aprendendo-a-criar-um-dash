@@ -264,24 +264,24 @@ with row4_col1:
    st.plotly_chart(fig7, use_container_width=True)
     
 with row4_col2:
-    df = pd.read_csv('despesaOrcamentaria 2022x2023x2024 - Gráficos gerados pela IA.csv')
+    df_ia = pd.read_csv('despesaOrcamentaria 2022x2023x2024 - Gráficos gerados pela IA.csv')
 
     # Create a copy to work with, avoiding modifying the original df
-    df_temp = df.copy()
+    df_temp_ia = df_ia.copy()
     
     # Set the second row (index 1) as the header
-    new_columns = df_temp.iloc[1].tolist()
-    df_filtered = df_temp[2:].copy() # Select data from row 2 onwards
-    df_filtered.columns = new_columns # Assign the extracted header as new column names
+    new_columns = df_temp_ia.iloc[1].tolist()
+    df_filtered_ia = df_temp_ia[2:].copy() # Select data from row 2 onwards
+    df_filtered_ia.columns = new_columns # Assign the extracted header as new column names
     
     # Rename the columns to be consistent and easier to work with
-    df_filtered = df_filtered.rename(columns={
+    df_filtered_ia = df_filtered_ia.rename(columns={
         'Orçamento Atualizado(R$)': 'Orçamento Atualizado',
         'Orçamento Realizado (R$)': 'Orçamento Realizado'
     })
     
     # Reset index after dropping rows
-    df_filtered = df_filtered.reset_index(drop=True)
+    df_filtered_ia = df_filtered_ia.reset_index(drop=True)
     
     
     def clean_currency(column):
@@ -292,11 +292,11 @@ with row4_col2:
                 .str.strip()
                 .astype(float))
     
-    df_filtered['Orçamento Atualizado'] = clean_currency(df_filtered['Orçamento Atualizado'])
-    df_filtered['Orçamento Realizado'] = clean_currency(df_filtered['Orçamento Realizado'])
+    df_filtered_ia['Orçamento Atualizado'] = clean_currency(df_filtered_ia['Orçamento Atualizado'])
+    df_filtered_ia['Orçamento Realizado'] = clean_currency(df_filtered_ia['Orçamento Realizado'])
     
     
-    fig8 = px.histogram(df_filtered, x='Função', y=['Orçamento Atualizado', 'Orçamento Realizado'],
+    fig8 = px.histogram(df_filtered_ia, x='Função', y=['Orçamento Atualizado', 'Orçamento Realizado'],
     title='Execução orçamentária por FUNÇÃO',
     barmode = 'group', text_auto=True,
     color_discrete_map={'Orçamento Atualizado': 'blue', 'Orçamento Realizado': 'red'})
