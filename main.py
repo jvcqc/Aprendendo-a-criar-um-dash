@@ -494,8 +494,6 @@ row7_col1, row7_col2 = st.columns(2)
 
 with row7_col1:
 
-    df = pd.read_csv('/content/despesaOrcamentaria 2022x2023x2024 - Gráficos gerados pela IA (1).csv')
-    
     # Seleciona as linhas 93 a 96 (índices 92 a 95) e as colunas 1, 2 e 3 (B, C, D)
     df_filtered = df.iloc[93:96, [1, 2, 3]].copy()
     
