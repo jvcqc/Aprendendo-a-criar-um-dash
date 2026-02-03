@@ -489,3 +489,50 @@ with row6_col2:
     fig12.show()
 
     st.plotly_chart(fig12, use_container_width=True)
+
+row7_col1, row7_col2 = st.columns(2)
+
+with row7_col1:
+
+    df = pd.read_csv('/content/despesaOrcamentaria 2022x2023x2024 - Gráficos gerados pela IA (1).csv')
+    
+    # Seleciona as linhas 93 a 96 (índices 92 a 95) e as colunas 1, 2 e 3 (B, C, D)
+    df_filtered = df.iloc[93:96, [1, 2, 3]].copy()
+    
+    # Renomeia as colunas para facilitar o uso
+    df_filtered.columns = ['ANO', 'Orçamento Atualizado', 'Orçamento Realizado']
+    
+    def clean_currency(column):
+        return (column.astype(str)
+                .str.replace('R$', '', regex=False)
+                .str.replace('.', '', regex=False)
+                .str.replace(',', '.', regex=False)
+                .str.strip()
+                .replace('nan', '0') # Se a célula estiver vazia, vira zero
+                .astype(float))
+    
+    # Aplica a limpeza às colunas de orçamento
+    df_filtered['Orçamento Atualizado'] = clean_currency(df_filtered['Orçamento Atualizado'])
+    df_filtered['Orçamento Realizado'] = clean_currency(df_filtered['Orçamento Realizado'])
+    
+    # Converte a coluna 'ANO' para inteiro
+    df_filtered['ANO'] = df_filtered['ANO'].astype(int)
+    
+    fig13 = px.bar(
+        df_filtered,
+        x='ANO',
+        y=['Orçamento Atualizado', 'Orçamento Realizado'],
+        title='Comparativo de Despesa com Encargos Especiais por Ano', # Updated title to reflect correct rows
+        barmode = 'group',
+        text_auto=False, # Removed automatic text formatting/rounding
+        color_discrete_map={'Orçamento Atualizado': 'blue', 'Orçamento Realizado': 'red'}
+    )
+    fig13.update_layout(
+        xaxis_title = 'Ano',
+        yaxis_title = 'Valor em R$',
+        xaxis={'type': 'category'}
+    )
+    fig13.update_traces(texttemplate='%{y}', textposition='outside') # Reverted to display full y-value
+    fig13.show()
+
+    st.plotly_chart(fig13, use_container_width=True)
