@@ -307,7 +307,7 @@ with row4_col2:
 row5_col1, row5_col2 = st.columns(2)
 
 with row5_col1:
-    df_ia = pd.read_csv('despesaOrcamentaria 2022x2023x2024 - Gráficos gerados pela IA.csv')
+    df_ia = pd.read_csv('despesaOrcamentaria 2022x2023x2024 - Gráficos gerados pela IA (1).csv')
     # Create a copy to work with
     df_temp = df.copy()
     
