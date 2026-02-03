@@ -400,6 +400,7 @@ with row5_col2:
     yaxis_title = 'Valor Total (R$)',
     xaxis={'type': 'category'} # Força o eixo X a tratar os nomes como categorias, não números
     )
+    fig10.update_layout(yaxis_title='Valor em R$ (Escala Log)')
     fig10.show()
     st.plotly_chart(fig10, use_container_width=True)
 
