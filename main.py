@@ -308,61 +308,59 @@ row5_col1, row5_col2 = st.columns(2)
 
 with row5_col1:
 
-    df = pd.read_csv('despesaOrcamentaria 2022x2023x2024 - Gráficos gerados pela IA (1).csv')
-    
     # Create a copy to work with
-df_temp = df.copy()
-
-mask = (
-    (pd.to_numeric(df_temp.iloc[:, 0], errors='coerce').isin([2022, 2023, 2024])) &
-    (df_temp.iloc[:, 1].notna()) &
-    (df_temp.iloc[:, 2].notna())
-)
-
-df_filtered_raw = df_temp[mask].copy()
-
-# Selecionar as colunas 0, 1 e 2 (Independente do nome delas)
-df_filtered = df_filtered_raw.iloc[:, 0:3].copy()
-
-# Explicitly assign the correct column names
-df_filtered.columns = ['ANO', 'DESPESA CORRENTE (R$)', 'DESPESA DE CAPITAL (R$)']
-
-# Convert 'ANO' to numeric
-df_filtered['ANO'] = pd.to_numeric(df_filtered['ANO'], errors='coerce')
-df_filtered = df_filtered.dropna(subset=['ANO'])
-
-def clean_currency(column):
-    return (column.astype(str)
-            .str.replace('R$', '', regex=False)
-            .str.replace('.', '', regex=False)
-            .str.replace(',', '.', regex=False)
-            .str.strip()
-            .astype(float))
-
-# Apply cleaning
-df_filtered['DESPESA CORRENTE (R$)'] = clean_currency(df_filtered['DESPESA CORRENTE (R$)'])
-df_filtered['DESPESA DE CAPITAL (R$)'] = clean_currency(df_filtered['DESPESA DE CAPITAL (R$)'])
-
-# Convert 'ANO' to integer
-df_filtered['ANO'] = df_filtered['ANO'].astype(int)
-
-# --- GRÁFICO ---
-# Nota: Adicionei log_y=True de volta, pois na imagem original a diferença 
-# entre 300 milhões e 4 milhões exige escala logarítmica para ser visível.
-fig9 = px.histogram(
-    df_filtered, 
-    x='ANO', 
-    y=['DESPESA CORRENTE (R$)', 'DESPESA DE CAPITAL (R$)'],
-    title='Distribuição do Orçamento Realizado por Categoria Econômica (2022-2024)',
-    barmode='group', 
-    text_auto='.2s',
-    log_y=True, # Recomendado baseado na sua imagem original
-    color_discrete_map={'DESPESA CORRENTE (R$)': 'blue', 'DESPESA DE CAPITAL (R$)': 'red'}
-)
-
-fig9.update_layout(yaxis_title='Valor em R$ (Escala Log)')
-fig9.show()
-st.plotly_chart(fig9, use_container_width=True)
+    df_temp = df.copy()
+    
+    mask = (
+        (pd.to_numeric(df_temp.iloc[:, 0], errors='coerce').isin([2022, 2023, 2024])) &
+        (df_temp.iloc[:, 1].notna()) &
+        (df_temp.iloc[:, 2].notna())
+    )
+    
+    df_filtered_raw = df_temp[mask].copy()
+    
+    # Selecionar as colunas 0, 1 e 2 (Independente do nome delas)
+    df_filtered = df_filtered_raw.iloc[:, 0:3].copy()
+    
+    # Explicitly assign the correct column names
+    df_filtered.columns = ['ANO', 'DESPESA CORRENTE (R$)', 'DESPESA DE CAPITAL (R$)']
+    
+    # Convert 'ANO' to numeric
+    df_filtered['ANO'] = pd.to_numeric(df_filtered['ANO'], errors='coerce')
+    df_filtered = df_filtered.dropna(subset=['ANO'])
+    
+    def clean_currency(column):
+        return (column.astype(str)
+                .str.replace('R$', '', regex=False)
+                .str.replace('.', '', regex=False)
+                .str.replace(',', '.', regex=False)
+                .str.strip()
+                .astype(float))
+    
+    # Apply cleaning
+    df_filtered['DESPESA CORRENTE (R$)'] = clean_currency(df_filtered['DESPESA CORRENTE (R$)'])
+    df_filtered['DESPESA DE CAPITAL (R$)'] = clean_currency(df_filtered['DESPESA DE CAPITAL (R$)'])
+    
+    # Convert 'ANO' to integer
+    df_filtered['ANO'] = df_filtered['ANO'].astype(int)
+    
+    # --- GRÁFICO ---
+    # Nota: Adicionei log_y=True de volta, pois na imagem original a diferença 
+    # entre 300 milhões e 4 milhões exige escala logarítmica para ser visível.
+    fig9 = px.histogram(
+        df_filtered, 
+        x='ANO', 
+        y=['DESPESA CORRENTE (R$)', 'DESPESA DE CAPITAL (R$)'],
+        title='Distribuição do Orçamento Realizado por Categoria Econômica (2022-2024)',
+        barmode='group', 
+        text_auto='.2s',
+        log_y=True, # Recomendado baseado na sua imagem original
+        color_discrete_map={'DESPESA CORRENTE (R$)': 'blue', 'DESPESA DE CAPITAL (R$)': 'red'}
+    )
+    
+    fig9.update_layout(yaxis_title='Valor em R$ (Escala Log)')
+    fig9.show()
+    st.plotly_chart(fig9, use_container_width=True)
 
 with row5_col2:
     
