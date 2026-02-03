@@ -363,8 +363,8 @@ with row5_col1:
     st.plotly_chart(fig9, use_container_width=True)
 
 with row5_col2:
-    
-# Seleciona as linhas 39, 42 e 45 e as colunas 0 e 2 (correspondentes a A e C)
+    df_temp = df.copy()
+    # Seleciona as linhas 39, 42 e 45 e as colunas 0 e 2 (correspondentes a A e C)
     df_filtered = df.iloc[[39, 42, 45], [0, 2]].copy()
     
     # Renomeia as colunas para facilitar o uso
